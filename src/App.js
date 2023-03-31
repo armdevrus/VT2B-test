@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import "./App.css";
+import Tariff from "./components/Table/Tariff/Tariff";
 
 function App() {
   const [service, setService] = useState("");
@@ -9,6 +10,8 @@ function App() {
   const [tel, setTel] = useState("");
   const [work, setWork] = useState("");
   const [error, setError] = useState(null);
+  const [tariff, setTariff] = useState(null);
+  const [activeButton, setActiveButton] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,7 +74,18 @@ function App() {
           <option value="переговорка">Переговорка</option>
         </select>
         {error && <h6 style={{ color: "red" }}>{error}</h6>}
-        <input type="submit" id="post" value="Отправить" />
+        {service === "рабочееместо" ? (
+          <Tariff tariffValue={tariff} cb={setTariff} cbActiveBtn={setActiveButton}/>
+        ) : null}
+        <input
+          type="submit"
+          id="post"
+          value="Отправить"
+          disabled={!activeButton}
+          style={{
+            backgroundColor: activeButton ? "#e4685d" : "gray",
+          }}
+        />
       </form>
     </div>
   );
