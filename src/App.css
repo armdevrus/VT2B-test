@@ -4,11 +4,15 @@
   justify-content: center;
   align-items: center;
 }
-h2{
+h2, h4{
   margin: 5px 0;
   text-align: center;
   font-weight: 400;
   font-family: 'Century Gothic'
+}
+.title__select{
+  margin-top: 15px;
+  color: #e4185d;
 }
 form {
   min-height: 210px;
@@ -25,6 +29,10 @@ input[type="submit"] {
   margin-top: 15px;
 }
 
+.select{
+  margin: 0 10px;
+}
+
 input[type="submit"] {
   /* position: absolute; */
   /* bottom: 10px; */
@@ -33,4 +41,5 @@ input[type="submit"] {
   border-radius: 5px;
   background-color: #e4685d;
   color: white;
+  /* margin-top: 0; */
 }
