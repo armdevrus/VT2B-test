@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import "./App.css";
+import axios from "axios";
 import Tariff from "./components/Table/Tariff/Tariff";
 import TariffTalk from "./components/Table/TariffTalk/TariffTalk";
+import "./App.css";
 
 function App() {
   const [person, setPerson] = useState("");
@@ -14,7 +15,8 @@ function App() {
   const [tariff, setTariff] = useState(null);
   const [activeButton, setActiveButton] = useState(false);
   const [hoursRent, setHoursRent] = useState(0);
-  
+  const [registerStatus, setRegisterStatus] = useState("");
+
   function validate(email, phone) {
     const validEmail =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -29,9 +31,28 @@ function App() {
       setError("Invalid email address!");
     }
   }
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     validate(email, tel);
+    axios
+      .post("http://localhost:8081/reg", {
+        person,
+        email,
+        tel,
+        work,
+        service,
+        tariff,
+        hoursRent,
+      })
+      .then((res) => {
+        console.log(res);
+        setRegisterStatus("Information of pay created succesfully!");
+      })
+      .catch((err) => {
+        console.log(err);
+        setRegisterStatus("Error!");
+      });
   };
 
   const handleChangeSevice = (e) => {
@@ -39,6 +60,7 @@ function App() {
     setTariff(null);
     setHoursRent(0);
     setActiveButton(false);
+    setRegisterStatus("")
   };
 
   const handleChangeHoursRent = (e) => {
@@ -53,12 +75,13 @@ function App() {
 
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} action="post.php" method="POST">
         <h2>Оплата</h2>
         <label htmlFor="person">ФИО:</label>
         <input
           type="text"
           id="person"
+          name="person"
           value={person}
           onChange={(e) => setPerson(e.target.value)}
         />
@@ -66,6 +89,7 @@ function App() {
         <input
           type="email"
           id="email"
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -73,6 +97,7 @@ function App() {
         <input
           type="text"
           id="tel"
+          name="tel"
           value={tel}
           onChange={(e) => setTel(e.target.value)}
         />
@@ -80,10 +105,11 @@ function App() {
         <input
           type="text"
           id="work"
+          name="work"
           value={work}
           onChange={(e) => setWork(e.target.value)}
         />
-        <select value={service} onChange={handleChangeSevice}>
+        <select name="service" value={service} onChange={handleChangeSevice}>
           <option disabled value="">
             Выберите услугу
           </option>
@@ -110,6 +136,7 @@ function App() {
             <label>
               Выберите срок аренды
               <select
+                name="hoursRent"
                 className="select"
                 value={hoursRent}
                 onChange={handleChangeHoursRent}
@@ -128,9 +155,10 @@ function App() {
             <h4 className="title__select">Cумма: {500 * hoursRent} руб.</h4>
           </>
         ) : null}
+        {registerStatus && <h4 className="title__select">{registerStatus}</h4>}
         <input
           type="submit"
-          id="post"
+          name="post"
           value="Оплатить"
           disabled={!activeButton}
           style={{
